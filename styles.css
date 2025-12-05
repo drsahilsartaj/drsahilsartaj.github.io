@@ -1,0 +1,1092 @@
+/* ==================== */
+/* VARIABLES - CHANGE COLORS HERE (Line 3-12) */
+/* ==================== */
+:root {
+    --space-black: #000005;
+    --nebula-purple: #7b2cbf;
+    --cosmic-cyan: #00fff5;
+    --terminal-green: #00ff41;
+    --star-white: #ffffff;
+}
+
+/* ==================== */
+/* BASE STYLES */
+/* ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--space-black);
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: white;
+}
+
+/* ==================== */
+/* SPACE BACKGROUND (Line 30-60) */
+/* ==================== */
+.space-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse at 20% 80%, rgba(60, 20, 100, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(20, 40, 100, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, #0a0a15 0%, #000005 100%);
+    z-index: 0;
+}
+
+.starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--duration) ease-in-out infinite;
+}
+
+.star.bright {
+    box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: var(--opacity); }
+    50% { opacity: 0.2; }
+}
+
+#comet-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* ==================== */
+/* PAGE SYSTEM */
+/* ==================== */
+.page {
+    display: none;
+    min-height: 100vh;
+    position: relative;
+    z-index: 2;
+}
+
+.page.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==================== */
+/* HOME PAGE HEADER (Line 95-130) */
+/* ==================== */
+#home {
+    padding: 1rem;
+    cursor: crosshair;
+    overflow: hidden;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 100;
+    background: radial-gradient(ellipse at center, rgba(0,0,5,0.9) 0%, transparent 70%);
+    padding: 1rem 2rem;
+}
+
+.main-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--cosmic-cyan) 50%, var(--nebula-purple) 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 5s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+}
+
+/* ==================== */
+/* SOLAR SYSTEM CONTAINER (Line 135-160) */
+/* To change size: modify width/height below */
+/* ==================== */
+.solar-system-container {
+    position: relative;
+    width: 100vw;
+    height: 55vh;
+    max-width: none;
+    min-height: 350px;
+    max-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* ==================== */
+/* SUN STYLES (Line 165-210) */
+/* To change sun size: modify width/height */
+/* ==================== */
+.sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 100px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+
+    background-position: center, center;
+    background-blend-mode: lighten;
+
+    background-size: 100% 100%;
+    background-repeat: repeat-x;
+    animation: sun-spin 30s linear infinite, sun-pulse 3s ease-in-out infinite;
+    
+    z-index: 50;
+}
+    /* Base sun surface */
+    /*background: 
+        radial-gradient(circle at 30% 30%, #fff9c4 0%, #ffeb3b 10%, #ffc107 30%, #ff9800 50%, #ff5722 70%, #e64a19 90%);
+    
+    /* Main glow */
+    /*box-shadow: 
+        0 0 60px 15px rgba(255, 200, 50, 0.9),
+        0 0 100px 30px rgba(255, 150, 0, 0.6),
+        0 0 150px 50px rgba(255, 100, 0, 0.4),
+        0 0 200px 70px rgba(255, 50, 0, 0.2),
+        inset 0 0 30px 10px rgba(255, 100, 0, 0.5);
+    
+    animation: sun-pulse 4s ease-in-out infinite;
+}*/
+
+/* Inner corona layer */
+.sun::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -40%;
+    width: 180%;
+    height: 180%;
+    border-radius: 50%;
+    mix-blend-mode: overlay;
+    background: radial-gradient(circle, rgba(255, 200, 50, 0.3) 0%, transparent 60%);
+    animation: corona 4s ease-in-out infinite alternate;
+}
+
+/* Outer corona with solar flares */
+.sun::after {
+    content: '';
+    position: absolute;
+    top: -80%;
+    left: -80%;
+    width: 260%;
+    height: 260%;
+    background-image: 
+        radial-gradient(2px 2px at 10% 20%, rgba(255, 255, 255, 0.9) 50%, transparent 100%),
+        radial-gradient(2px 2px at 85% 15%, rgba(255, 230, 150, 0.8) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 20% 80%, rgba(239, 169, 7, 0.9) 50%, transparent 100%),
+        radial-gradient(2px 2px at 90% 75%, rgba(255, 200, 100, 0.8) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 50% 5%, rgba(255, 255, 255, 0.9) 50%, transparent 100%),
+        radial-gradient(2px 2px at 5% 50%, rgba(255, 220, 150, 0.8) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 95% 50%, rgba(255, 255, 200, 0.9) 50%, transparent 100%),
+        radial-gradient(2px 2px at 50% 95%, rgba(255, 200, 100, 0.8) 50%, transparent 100%),
+        radial-gradient(1px 1px at 30% 10%, rgba(255, 255, 255, 0.7) 50%, transparent 100%),
+        radial-gradient(1px 1px at 70% 90%, rgba(255, 230, 180, 0.7) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 15% 60%, rgba(255, 255, 220, 0.8) 50%, transparent 100%),
+        radial-gradient(1px 1px at 80% 40%, rgba(255, 200, 150, 0.7) 50%, transparent 100%),
+        radial-gradient(2px 2px at 40% 15%, rgba(255, 255, 255, 0.9) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 60% 85%, rgba(255, 220, 120, 0.8) 50%, transparent 100%),
+        radial-gradient(1px 1px at 25% 45%, rgba(255, 255, 200, 0.7) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 75% 55%, rgba(255, 240, 180, 0.8) 50%, transparent 100%);
+    border-radius: 50%;
+    animation: glitter-rotate 90s linear infinite, glitter-twinkle 5s ease-in-out infinite;
+}
+
+@keyframes sun-pulse {
+        0%, 100% { 
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow: 
+                0 0 60px 15px rgba(255, 200, 50, 0.9),
+                0 0 100px 30px rgba(255, 150, 0, 0.6),
+                0 0 150px 50px rgba(255, 100, 0, 0.4);
+        }
+        50% { 
+            transform: translate(-50%, -50%) scale(1.03);
+            box-shadow: 
+                0 0 80px 25px rgba(255, 200, 50, 1),
+                0 0 130px 45px rgba(255, 150, 0, 0.7),
+                0 0 180px 65px rgba(255, 100, 0, 0.5);
+        }
+    }
+
+@keyframes sun-rotate {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+@keyframes corona {
+        0% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+        100% { transform: scale(1.15) rotate(15deg); opacity: 0.4; }
+    }
+
+@keyframes glitter-rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+@keyframes glitter-twinkle {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Solar flare elements - add these AFTER .sun in HTML or use extra elements */
+/*.sun-flares {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90px;
+    height: 90px;
+    transform: translate(-50%, -50%);
+    z-index: 49;
+    pointer-events: none;
+}
+
+.flare {
+    position: absolute;
+    background: radial-gradient(ellipse, rgba(255, 200, 100, 1) 0%, rgba(255, 100, 50, 0.4) 40%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(2px);
+}
+
+
+.flare-1 {
+    width: 30px;
+    height: 60px;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-10deg);
+    animation: flare-burst 6s ease-in-out infinite;
+}
+
+.flare-2 {
+    width: 25px;
+    height: 50px;
+    bottom: -35px;
+    left: 30%;
+    transform: rotate(170deg);
+    animation: flare-burst 8s ease-in-out infinite 2s;
+}
+
+.flare-3 {
+    width: 20px;
+    height: 45px;
+    top: 20%;
+    right: -25px;
+    transform: rotate(80deg);
+    animation: flare-burst 7s ease-in-out infinite 1s;
+}
+
+.flare-4 {
+    width: 22px;
+    height: 40px;
+    top: 60%;
+    left: -20px;
+    transform: rotate(-100deg);
+    animation: flare-burst 9s ease-in-out infinite 3s;
+}
+*/
+/* Sun animations */
+/*@keyframes sun-pulse {
+    0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 
+        0 0 60px 15px rgba(255, 200, 50, 0.9),
+        0 0 100px 30px rgba(255, 150, 0, 0.6),
+        0 0 150px 50px rgba(255, 100, 0, 0.4),
+        0 0 200px 70px rgba(255, 50, 0, 0.2),
+        inset 0 0 30px 10px rgba(255, 100, 0, 0.5);
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.03);
+        box-shadow: 
+        0 0 80px 25px rgba(255, 200, 50, 1),
+        0 0 130px 45px rgba(255, 150, 0, 0.7),
+        0 0 180px 65px rgba(255, 100, 0, 0.5),
+        0 0 250px 90px rgba(255, 50, 0, 0.3),
+        inset 0 0 40px 15px rgba(255, 100, 0, 0.6);
+    }
+}
+
+@keyframes plasma-move {
+    0%, 100% { 
+        transform: rotate(0deg) scale(1);
+        opacity: 0.8;
+    }
+    25% {
+        transform: rotate(5deg) scale(1.02);
+        opacity: 0.9;
+    }
+    50% { 
+        transform: rotate(0deg) scale(1.01);
+        opacity: 0.7;
+    }
+    75% {
+        transform: rotate(-5deg) scale(1.03);
+        opacity: 0.85;
+    }
+}
+
+@keyframes corona-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes corona-pulse {
+    0%, 100% { 
+        opacity: 0.6;
+        transform: rotate(0deg) scale(1);
+    }
+    50% { 
+        opacity: 0.8;
+        transform: rotate(180deg) scale(1.05);
+    }
+}
+
+@keyframes flare-burst {
+    0%, 100% { 
+        opacity: 0.3;
+        transform: translateX(-50%) scaleY(0.8);
+    }
+    20% {
+        opacity: 0.8;
+        transform: translateX(-50%) scaleY(1.3);
+    }
+    40% {
+        opacity: 0.5;
+        transform: translateX(-50%) scaleY(1);
+    }
+    60% {
+        opacity: 0.9;
+        transform: translateX(-50%) scaleY(1.4);
+    }
+    80% {
+        opacity: 0.4;
+        transform: translateX(-50%) scaleY(0.9);
+    }
+}
+
+@keyframes corona {
+    0% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+    100% { transform: scale(1.15) rotate(15deg); opacity: 0.4; }
+}
+*/
+
+/* ==================== */
+/* ORBIT RINGS (Line 215-235) */
+/* ==================== */
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+/* ==================== */
+/* 3D PLANETS (Line 240-320) */
+/* These use real NASA/Wikimedia textures */
+/* ==================== */
+.planet {
+    position: absolute;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 500;
+
+    /* texture for axial spin */
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    background-repeat: repeat-x;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    /* lighting controlled by JS */
+    --light-x: 0%;
+    --light-y: 0%;
+    --shadow-x: 0%;
+    --shadow-y: 0%;
+    --light-strength: 0.6;
+
+    /* 3D Sphere effect */
+    box-shadow:
+    inset 0 0 12px rgba(0, 0, 0, 0.7);
+
+    /* axial spin */
+    animation: planet-spin 30s linear infinite;
+}
+
+
+/* Highlight (day side) – position is controlled by JS via CSS vars */
+.planet::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 26%;
+    height: 26%;
+    transform: translate(-50%, -50%) translate(var(--light-x), var(--light-y));
+    background: radial-gradient(circle, rgba(255,255,255,var(--light-strength)) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(2px);
+}
+
+/* Shadow (night side) – opposite of the light direction */
+.planet::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 55%;
+    transform: translate(-50%, -50%) translate(var(--shadow-x), var(--shadow-y));
+    background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+@keyframes planet-spin {
+    from {background-position: 0% 50%;}
+    to {background-position: -200% 50%;}
+}
+
+.planet:hover {
+    transform: scale(2) !important;
+    z-index: 200;
+    box-shadow: 
+        inset -8px -8px 20px rgba(0, 0, 0, 0.8),
+        inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+        0 0 30px 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Planet Labels */
+.planet-label {
+    position: absolute;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s;
+    border: 1px solid var(--cosmic-cyan);
+    text-align: center;
+    z-index: 300;
+}
+
+.planet:hover .planet-label {
+    opacity: 1;
+}
+
+.label-platform {
+    color: var(--cosmic-cyan);
+    font-size: 0.5rem;
+    display: block;
+    margin-top: 2px;
+}
+
+/* Saturn Ring */
+.saturn-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 3px solid rgba(210, 180, 140, 0.6);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotateX(70deg);
+    pointer-events: none;
+    box-shadow: 
+        0 0 8px rgba(210, 180, 140, 0.4),
+        inset 0 0 8px rgba(210, 180, 140, 0.3);
+}
+
+/* ==================== */
+/* CTA BUTTON (Line 330-380) */
+/* ==================== */
+.cta-section {
+    text-align: center;
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 100;
+    background: radial-gradient(ellipse at center, rgba(0,0,5,0.9) 0%, transparent 70%);
+    padding: 1.5rem 2rem;
+}
+
+.terminal-btn {
+    font-family: 'Fira Code', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1rem 2.5rem;
+    background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+    border: 2px solid var(--terminal-green);
+    border-radius: 8px;
+    color: var(--terminal-green);
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.terminal-btn::before {
+    content: '>';
+    margin-right: 10px;
+    animation: blink-cursor 1s infinite;
+}
+
+@keyframes blink-cursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.terminal-btn:hover {
+    background: var(--terminal-green);
+    color: #000;
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.6);
+}
+
+.comet-hint {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 1rem;
+}
+
+.comet-hint span {
+    color: var(--cosmic-cyan);
+}
+
+/* ==================== */
+/* WARP ANIMATION (Line 385-430) */
+/* ==================== */
+.warp-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--space-black);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    flex-direction: column;
+}
+
+.warp-overlay.active { display: flex; }
+
+.warp-planet {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    animation: warp-zoom 1.5s ease-in forwards;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+@keyframes warp-zoom {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(25); opacity: 1; }
+    100% { transform: scale(60); opacity: 0; }
+}
+
+.warp-stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.warp-star-line {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, white, transparent);
+    height: 2px;
+    animation: warp-star 0.8s linear forwards;
+}
+
+@keyframes warp-star {
+    0% { transform: translateX(0) scaleX(1); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateX(100vw) scaleX(3); opacity: 0; }
+}
+
+.warp-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: white;
+    margin-top: 2rem;
+    opacity: 0;
+    animation: fade-in 0.5s ease 0.3s forwards;
+}
+
+@keyframes fade-in { to { opacity: 1; } }
+
+/* ==================== */
+/* MATRIX OVERLAY (Line 440-455) */
+/* ==================== */
+.matrix-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 4000;
+    display: none;
+}
+
+.matrix-overlay.active { display: block; }
+#matrix-canvas { width: 100%; height: 100%; }
+
+/* ==================== */
+/* TERMINAL STYLES (Line 460-580) */
+/* ==================== */
+#terminal-page {
+    background: #000;
+    padding: 0;
+    justify-content: flex-start;
+}
+
+.terminal-container {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, #0a0f0a 0%, #000 100%);
+    font-family: 'Fira Code', monospace;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Scanline effect */
+.terminal-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* CRT flicker */
+.terminal-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 255, 65, 0.03);
+    pointer-events: none;
+    animation: flicker 0.15s infinite;
+    z-index: 11;
+}
+
+@keyframes flicker {
+    0%, 50% { opacity: 0.27; }
+    25%, 75% { opacity: 0.25; }
+}
+
+.terminal-header {
+    background: linear-gradient(90deg, #1a1a1a, #0d0d0d);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #333;
+    z-index: 5;
+}
+
+.terminal-dots { display: flex; gap: 8px; }
+
+.terminal-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.terminal-dot:hover { transform: scale(1.2); }
+.terminal-dot.red { background: #ff5f56; }
+.terminal-dot.yellow { background: #ffbd2e; }
+.terminal-dot.green { background: #27ca40; }
+
+.terminal-title {
+    color: var(--terminal-green);
+    font-size: 0.9rem;
+    flex: 1;
+    text-align: center;
+    text-shadow: 0 0 10px var(--terminal-green);
+}
+
+.terminal-body {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    z-index: 5;
+}
+
+.terminal-body::-webkit-scrollbar { width: 8px; }
+.terminal-body::-webkit-scrollbar-track { background: #0a0a0a; }
+.terminal-body::-webkit-scrollbar-thumb { background: var(--terminal-green); border-radius: 4px; }
+
+.terminal-line {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+    color: var(--terminal-green);
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+.terminal-line.dim { color: #0a5f0a; text-shadow: none; }
+.terminal-line.bright { color: #50ff50; }
+.terminal-line.error { color: #ff4444; }
+.terminal-line.cyan { color: var(--cosmic-cyan); }
+.terminal-line.yellow { color: #ffff00; }
+.terminal-line.purple { color: #bf7fff; }
+
+.terminal-prompt::before { content: 'sahil@universe:~$ '; color: #50ff50; }
+
+.terminal-input-container {
+    padding: 1rem 1.5rem;
+    background: rgba(0, 20, 0, 0.5);
+    border-top: 1px solid #1a3a1a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 5;
+}
+
+.terminal-prefix {
+    color: #50ff50;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+.terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--terminal-green);
+    font-family: 'Fira Code', monospace;
+    font-size: 1rem;
+    outline: none;
+}
+
+.terminal-input::placeholder { color: #0a5f0a; }
+
+.ascii-art {
+    font-size: 0.5rem;
+    line-height: 1.1;
+    white-space: pre;
+    margin: 1rem 0;
+}
+
+.cmd-link {
+    color: var(--cosmic-cyan);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* ==================== */
+/* PROFILE PAGE (Line 590-700) */
+/* ==================== */
+#profile-page {
+    padding: 2rem;
+    background: var(--space-black);
+}
+
+.profile-container { max-width: 1000px; width: 100%; }
+
+.nav-btn {
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--terminal-green);
+    color: var(--terminal-green);
+    padding: 0.7rem 1.2rem;
+    border-radius: 5px;
+    font-family: 'Fira Code', monospace;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 100;
+}
+
+.nav-btn:hover { background: var(--terminal-green); color: #000; }
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fade-up 0.8s ease-out;
+}
+
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--nebula-purple), var(--cosmic-cyan));
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    box-shadow: 0 0 50px rgba(123, 44, 191, 0.5);
+    position: relative;
+}
+
+.profile-avatar::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(var(--cosmic-cyan), var(--nebula-purple), var(--cosmic-cyan));
+    z-index: -1;
+    animation: rotate-border 4s linear infinite;
+}
+
+@keyframes rotate-border { to { transform: rotate(360deg); } }
+
+.profile-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    background: linear-gradient(135deg, #fff, var(--cosmic-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.profile-role {
+    font-family: 'Space Mono', monospace;
+    color: var(--terminal-green);
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+}
+
+.profile-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-section h2 {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--cosmic-cyan);
+    margin-bottom: 1rem;
+}
+
+.profile-section p {
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.8;
+}
+
+.education-item {
+    background: rgba(0, 255, 245, 0.05);
+    border-left: 3px solid var(--cosmic-cyan);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.education-item h3 { color: white; margin-bottom: 0.3rem; }
+.education-item p { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; }
+
+.skill-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+.skill-tag {
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid var(--terminal-green);
+    color: var(--terminal-green);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.skill-tag:hover { background: var(--terminal-green); color: #000; }
+
+.project-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
+}
+
+.project-card:hover { border-color: var(--cosmic-cyan); transform: translateY(-3px); }
+.project-card h3 { color: white; margin-bottom: 0.5rem; }
+.project-card p { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; }
+.project-link { color: var(--cosmic-cyan); text-decoration: none; }
+
+.social-links-profile {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.social-link-btn {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    text-decoration: none;
+    border: 2px solid;
+    transition: all 0.3s;
+}
+
+.social-link-btn:hover { transform: translateY(-5px) scale(1.1); }
+.social-link-btn.instagram { border-color: #e1306c; color: #e1306c; }
+.social-link-btn.twitter { border-color: #fff; color: #fff; }
+.social-link-btn.linkedin { border-color: #0077b5; color: #0077b5; }
+.social-link-btn.kaggle { border-color: #20beff; color: #20beff; }
+.social-link-btn.github { border-color: #8b949e; color: #8b949e; }
+.social-link-btn.email { border-color: var(--nebula-purple); color: var(--nebula-purple); }
+
+/* ==================== */
+/* PUZZLE MODAL (Line 720-780) */
+/* ==================== */
+.puzzle-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
+}
+
+.puzzle-modal.active { display: flex; }
+
+.puzzle-container {
+    background: #0a0a0a;
+    border: 2px solid var(--terminal-green);
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+
+.puzzle-title {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--terminal-green);
+    margin-bottom: 1rem;
+}
+
+.puzzle-question {
+    color: #aaa;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.puzzle-input {
+    width: 100%;
+    padding: 1rem;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: var(--terminal-green);
+    font-family: 'Fira Code', monospace;
+    margin-bottom: 1rem;
+}
+
+.puzzle-input:focus { outline: none; border-color: var(--terminal-green); }
+
+.puzzle-btn {
+    background: var(--terminal-green);
+    color: #000;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0.3rem;
+}
+
+.puzzle-btn.close { background: #333; color: #fff; }
+
+.puzzle-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.puzzle-result.success { background: rgba(0,255,65,0.1); border: 1px solid var(--terminal-green); color: var(--terminal-green); }
+.puzzle-result.error { background: rgba(255,68,68,0.1); border: 1px solid #f44; color: #f44; }
+
+/* ==================== */
+/* RESPONSIVE (Line 790-820) */
+/* ==================== */
+@media (max-width: 1200px) {
+    .solar-system-container { height: 50vh; }
+}
+
+@media (max-width: 768px) {
+    .sun { width: 70px; height: 70px; }
+    .solar-system-container { height: 45vh; min-height: 300px; }
+    .ascii-art { font-size: 0.35rem; }
+}
+
+@media (max-width: 480px) {
+    .sun { width: 55px; height: 55px; }
+    .solar-system-container { height: 40vh; min-height: 280px; }
+}

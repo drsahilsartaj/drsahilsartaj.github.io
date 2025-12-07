@@ -1,0 +1,14 @@
+# Exclude Three.js unnecessary folders (keeps locally, won't push)
+three.js/docs/
+three.js/test/
+three.js/manual/
+three.js/editor/
+three.js/playground/
+three.js/src/
+three.js/utils/
+
+# Exclude other unused folders
+lib/
+node_modules/
+.DS_Store
+*.log

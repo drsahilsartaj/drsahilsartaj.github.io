@@ -1,0 +1,171 @@
+/* ==================== */
+/* GALAXY EXPLORER PAGE STYLES */
+/* ==================== */
+
+#galaxy-page {
+    position: relative;
+    background: radial-gradient(ellipse at center, #0a0a1a 0%, #000000 100%);
+}
+
+#galaxy-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.galaxy-nav {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--cosmic-cyan);
+    color: var(--cosmic-cyan);
+    padding: 12px 24px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.galaxy-nav:hover {
+    background: rgba(0, 255, 245, 0.2);
+    transform: translateX(-5px);
+    box-shadow: 0 0 20px rgba(0, 255, 245, 0.5);
+}
+
+.galaxy-info {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--nebula-purple);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    max-width: 350px;
+}
+
+.galaxy-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff6030, #1b3984, #00fff5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.galaxy-subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: var(--cosmic-cyan);
+    text-align: center;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.galaxy-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.galaxy-control-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 15px;
+    background: rgba(123, 44, 191, 0.3);
+    border: 1px solid var(--nebula-purple);
+    color: white;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.galaxy-control-btn:hover {
+    background: rgba(123, 44, 191, 0.6);
+    border-color: var(--cosmic-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(123, 44, 191, 0.5);
+}
+
+.galaxy-control-btn:active {
+    transform: translateY(0);
+}
+
+.galaxy-hint {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+/* ==================== */
+/* RESPONSIVE DESIGN */
+/* ==================== */
+
+@media (max-width: 768px) {
+    .galaxy-info {
+        top: auto;
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        max-width: none;
+    }
+
+    .galaxy-title {
+        font-size: 22px;
+    }
+
+    .galaxy-controls {
+        flex-direction: column;
+    }
+
+    .galaxy-control-btn {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .galaxy-nav {
+        font-size: 14px;
+        padding: 10px 18px;
+    }
+}
+
+/* ==================== */
+/* ANIMATIONS */
+/* ==================== */
+
+@keyframes galaxyFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#galaxy-page.active .galaxy-info {
+    animation: galaxyFadeIn 0.8s ease-out;
+}
+
+#galaxy-page.active .galaxy-nav {
+    animation: galaxyFadeIn 0.8s ease-out 0.2s backwards;
+}

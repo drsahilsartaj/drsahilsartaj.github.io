@@ -5,20 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaxy Explorer | Sahil's Universe</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; }
-        iframe { width: 100%; height: 100vh; border: none; display: block; }
-        .back-btn { 
-            position: fixed; top: 20px; left: 20px; z-index: 9999;
-            background: rgba(0,0,0,0.8); border: 2px solid #00fff5;
-            color: #00fff5; padding: 12px 24px; border-radius: 8px;
-            cursor: pointer; font-family: 'Orbitron', sans-serif;
-            text-decoration: none; display: block;
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background: #000; 
         }
-        .back-btn:hover { background: rgba(0,255,245,0.2); }
+        
+        /* Hide the original three.js header*/
+        iframe { 
+            width: 100%; 
+            height: 100vh;
+            border: none; 
+            display: block; 
+        }
+        
+        .back-btn { 
+            position: fixed; 
+            top: 20px; 
+            left: 20px; 
+            z-index: 10000;
+            background: rgba(0,0,0,0.85); 
+            border: 2px solid #00fff5;
+            color: #00fff5; 
+            padding: 12px 24px; 
+            border-radius: 8px;
+            cursor: pointer; font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-family: 600;
+            text-decoration: none; 
+            display: flex;
+            align-items: center; 
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0,255,245,0.3);
+        }
+        .back-btn:hover { 
+            background: rgba(0,255,245,0.2); 
+            transform: translateX(-3px);
+            box-shadow: 0 0 25px rgba(0,255,245,0.5);
+        }
     </style>
 </head>
 <body>
-    <a href="../index.html" class="back-btn">← Back to Home</a>
+    <a href="../index.html" class="back-btn">
+        <span>&larr;</span>
+        <span>Back to Sahil's Universe</span>
+    </a>
     <iframe src="../three.js/examples/webgpu_tsl_galaxy.html"></iframe>
 </body>
 </html>

@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxy Explorer | Sahil's Universe</title>
+    <title>
+        Galaxy Explorer through Sahil's Universe
+    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
     <style>
         body { 
             margin: 0; 
@@ -18,18 +22,19 @@
             border: none; 
             display: block; 
         }
-        
+        /* Back button */
         .back-btn { 
             position: fixed; 
             top: 20px; 
             left: 20px; 
             z-index: 10000;
-            background: rgba(0,0,0,0.85); 
+            background: rgba(0,0,0,0.9); 
             border: 2px solid #00fff5;
             color: #00fff5; 
             padding: 12px 24px; 
             border-radius: 8px;
-            cursor: pointer; font-family: 'Orbitron', sans-serif;
+            cursor: pointer; 
+            font-family: 'Orbitron', sans-serif;
             font-size: 14px;
             font-family: 600;
             text-decoration: none; 
@@ -42,15 +47,346 @@
         .back-btn:hover { 
             background: rgba(0,255,245,0.2); 
             transform: translateX(-3px);
-            box-shadow: 0 0 25px rgba(0,255,245,0.5);
+            box-shadow: 0 0 50px rgba(0,255,245,0.5);
         }
+
+        /* Story overlay with scroll effect*/
+        /* .story-overlay {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-height: 50vh;
+            z-index: 10000;
+            background: linear-gradient(to top,
+            rgba(0, 0, 0, 0.95), 
+            rgba(0, 0, 0, 0.7), 
+            transparent 100%);
+            padding: 40px 60px 120px 60px;
+            pointer-events: none;
+            overflow: hidden;
+        } */
+        .story-overlay {
+            position: fixed;
+            bottom: 120px;
+            left: 50px;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+
+
+        .story-container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .story-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            line-height: 1.2;
+            color: #00ff00;
+            font-weight: 50;
+            /* The "Glow" effect */
+            text-shadow: 0 0 100px rgba(255, 255, 255, 0.9);
+            /* text-shadow: 0px 0px 8px rgba(0, 255, 0, 0.8);  */
+            letter-spacing: 2px;
+        }
+
+        .story-line {
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-shadow:
+                0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(0, 255, 245, 0.6),
+                0 0 30px rgba(0, 255, 245, 0.4);
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 2s ease-out;
+        }
+
+        /* .story-line.fade-up {
+            opacity: 0;
+            transform: translateY(-50px);
+        } */
+        .story-line.fade-away {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+
+        .story-line.permanent {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 24px;
+            background: #ffffff;
+            margin-left: 2px;
+            animation: blink 0.8s infinite;
+            box-shadow: 
+                0 0 5px rgba(255, 255, 245, 1),
+                0 0 10px rgba(0, 255, 245, 0.8);
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+            
+        
+        /* @keyframes fadeIn {
+            to { opacity: 1; }
+        } */
+
     </style>
 </head>
 <body>
+    <!-- Galaxy iframe -->
+    <iframe src="../three.js/examples/webgpu_tsl_galaxy.html"></iframe>
+
+    <!-- Story Overlay -->
+    <div class="story-overlay">
+        <div class="story-text" id="story-text"></div>
+    </div>
+
+    <!-- Back button -->
     <a href="../index.html" class="back-btn">
         <span>&larr;</span>
         <span>Back to Sahil's Universe</span>
     </a>
-    <iframe src="../three.js/examples/webgpu_tsl_galaxy.html"></iframe>
+
+    <!-- Keyboard sound (using Web Audio API beep) -->
+    <script>
+        const story = [
+            ">>> TRANSMISSION RECEIVED <<<",
+            "You have departed from your origin point...",
+            "SAHIL'S UNIVERSE.",
+            "Welcome, traveler, to the INFINITE GALAXY.",
+            
+            "A galaxy much like SAHIL'S UNIVERSE exists here.",
+            "But the question remains, traveler...",
+            "Would you like to CREATE YOUR OWN UNIVERSE?",
+            "The choice... is yours."
+        ];
+
+        const permanentLines = [
+            "Would you like to CREATE YOUR OWN UNIVERSE?",
+            "The choice... is yours."
+        ];
+
+        const storyContainer = document.getElementById('story-text');
+        let currentLine = 0;
+        let currentChar = 0;
+        
+        // const maxVisibleLines = 8;
+        
+        // Audio setup
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let ambientOscillator = null;
+        let ambientGain = null;
+
+        function startAmbientSound() {
+            ambientOscillator = audioContext.createOscillator();
+            ambientGain = audioContext.createGain();
+            
+            ambientOscillator.connect(ambientGain);
+            ambientGain.connect(audioContext.destination);
+            
+            ambientOscillator.frequency.value = 60; // Deep space hum
+            ambientOscillator.type = 'sine';
+            
+            ambientGain.gain.setValueAtTime(0, audioContext.currentTime);
+            ambientGain.gain.linearRampToValueAtTime(0.03, audioContext.currentTime + 2);
+            
+            ambientOscillator.start();
+        }
+
+        // Key sound effect
+        function playKeySound() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 1200 + Math.random() * 400;
+            oscillator.type = 'square';
+
+            filter.type = 'lowpass';
+            filter.frequency.value = 2000;
+            
+            gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.04);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.04);
+        }
+
+        function fadeOldLines() {
+            const lines = storyContainer.querySelectorAll('.story-line');
+            if (lines.length > maxVisibleLines) {
+                // Fade out oldest line
+                lines[0].classList.add('fade-up');
+                setTimeout(() => {
+                    lines[0].remove();
+                }, 1500);
+            }
+        }
+
+        
+        // function typeWriter() {
+        //     if(currentLine >= story.length) {
+        //         // Story finished
+        //         const cursor = document.querySelector('.cursor');
+        //         if (cursor) cursor.remove();
+
+        //         // Stop ambient sound
+        //         if (ambientGain) {
+        //             ambientGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 3);
+        //         }
+        //         return;
+        //     }
+
+        function typeWriter() {
+            if (currentLine >= story.length) {
+                return;
+            }
+
+            const line = story[currentLine];
+            const isPermanent = permanentLines.includes(line);
+            
+            if (currentChar === 0) {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'story-line' + (isPermanent ? ' permanent' : '');
+                lineDiv.id = `line-${currentLine}`;
+                storyContainer.appendChild(lineDiv);
+            }
+            
+            const lineDiv = document.getElementById(`line-${currentLine}`);
+
+            // if (currentChar < line.length) {
+            //     const char = line[currentChar];
+                
+            //     // Remove cursor
+            //     const cursor = lineDiv.querySelector('.cursor');
+            //     if (cursor) cursor.remove();
+                
+            //     // Add character
+            //     lineDiv.appendChild(document.createTextNode(char));
+                
+            //     // Add cursor
+            //     const newCursor = document.createElement('span');
+            //     newCursor.className = 'cursor';
+            //     lineDiv.appendChild(newCursor);
+                
+            //     if (char !== ' ' && char !== '.') {
+            //         playKeySound();
+            //     }
+            if (currentChar < line.length) {
+                const char = line[currentChar];
+
+                const cursor = lineDiv.querySelector('.cursor');
+                if (cursor) cursor.remove();
+
+                lineDiv.appendChild(document.createTextNode(char));
+
+                const newCursor = document.createElement('span');
+                newCursor.className = 'cursor';
+                lineDiv.appendChild(newCursor);
+
+                if (char !== ' ' && char !== '.') {
+                    playKeySound();
+                }      
+                /////////////////////////
+
+                currentChar++;
+                
+                // const speed = line === '...' ? 800 : (100 + Math.random() * 50);
+                const speed = line === '...' ? 800 : (100 + Math.random() * 50);
+                setTimeout(typeWriter, speed);
+            } 
+            else {
+                // Remove cursor after line finishes
+                const cursor = lineDiv.querySelector('.cursor');
+                if (cursor) cursor.remove();
+                
+                // Fade away non-permanent lines after 3 seconds
+                if (!isPermanent) {
+                    setTimeout(() => {
+                        lineDiv.classList.add('fade-away');
+                        setTimeout(() => lineDiv.remove(), 2000);
+                    }, 1000); // Delay before starting fade
+                }
+                
+                currentLine++;
+                currentChar = 0;
+                
+                const pause = 2000 + Math.random() * 1000;
+                setTimeout(typeWriter, pause);
+            }
+        }
+
+        // Start ambient sound immediately
+        startAmbientSound();
+
+        // Start typing after 2 seconds
+        setTimeout(typeWriter, 2000);
+        </script>
+
+            
+            <!-- if (currentChar < line.length) {
+                // Type character
+                const char = line[currentChar];
+
+                // Remove cursor
+                const cursor = lineDiv.querySelector('.cursor');
+                if (cursor) cursor.remove();
+
+                // Add character
+                const textNode = document.createTextNode(char);
+                lineDiv.appendChild(textNode);
+                
+                // Add cursor back
+                const newCursor = document.createElement('span');
+                newCursor.className = 'cursor';
+                lineDiv.appendChild(newCursor);
+                
+                // Play sound for non-space characters
+                if (char !== ' ' && char !== '.') {
+                    playKeySound();
+                }
+
+                currentChar++;
+
+                // Slower, more dramatic speed (100-150ms per character)
+                const speed = line === '...' ? 800 : (100 + Math.random() * 50);
+                setTimeout(typeWriter, speed);
+            } else {
+                // Line finished
+                currentLine++;
+                currentChar = 0;
+                
+                // Longer pause between lines (2-3 seconds)
+                const pause = 2000 + Math.random() * 1000;
+                setTimeout(typeWriter, pause);
+            }
+        }
+        
+        // Start typing after 2 seconds
+        setTimeout(() => {
+            startAmbientSound();
+            setTimeout(typeWriter, 1000);
+        }, 2000);
+    </script>
+     -->
 </body>
 </html>

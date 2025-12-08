@@ -139,6 +139,30 @@
             0%, 49% { opacity: 1; }
             50%, 100% { opacity: 0; }
         }
+
+        .sound-btn {
+        position: fixed;
+        top: 70px;          /* just below Back button */
+        left: 20px;
+        z-index: 10000;
+        background: rgba(0,0,0,0.7);
+        border: 2px solid #00fff5;
+        color: #00fff5;
+        padding: 8px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 12px;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s ease;
+        box-shadow: 0 0 10px rgba(0,255,245,0.3);
+    }
+    .sound-btn:hover {
+        background: rgba(0,255,245,0.2);
+    }
+
+
             
         
         /* @keyframes fadeIn {
@@ -147,6 +171,7 @@
 
     </style>
 </head>
+
 <body>
     <!-- Galaxy iframe -->
     <iframe src="../three.js/examples/webgpu_tsl_galaxy.html"></iframe>
@@ -161,6 +186,9 @@
         <span>&larr;</span>
         <span>Back to Sahil's Universe</span>
     </a>
+
+    <a id="sound-btn" class="sound-btn">Wanna feel Infinity?</a>
+
 
     <!-- Keyboard sound (using Web Audio API beep) -->
     <script>
@@ -199,11 +227,11 @@
             ambientOscillator.connect(ambientGain);
             ambientGain.connect(audioContext.destination);
             
-            ambientOscillator.frequency.value = 60; // Deep space hum
-            ambientOscillator.type = 'sine';
+            ambientOscillator.frequency.value = 455; // Deep space hum
+            ambientOscillator.type = 'triangle'; // 'sine', 'triangle', 'sawtooth', 'square'
             
             ambientGain.gain.setValueAtTime(0, audioContext.currentTime);
-            ambientGain.gain.linearRampToValueAtTime(0.03, audioContext.currentTime + 2);
+            ambientGain.gain.linearRampToValueAtTime(0.025, audioContext.currentTime + 2);
             
             ambientOscillator.start();
         }
@@ -336,11 +364,16 @@
         }
 
         // Start ambient sound immediately
+        // startAmbientSound();
+        document.getElementById('sound-btn').addEventListener('click', () => {
+        audioContext.resume();
         startAmbientSound();
+    });
 
         // Start typing after 2 seconds
         setTimeout(typeWriter, 2000);
-        </script>
+    
+    </script>
 
             
             <!-- if (currentChar < line.length) {

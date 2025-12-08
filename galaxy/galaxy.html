@@ -14,8 +14,6 @@
             overflow: hidden; 
             background: #000; 
         }
-
-
         
         /* Hide the original three.js header*/
         iframe { 
@@ -212,7 +210,18 @@
 
     <!-- Curve point hint with arrow in the Galaxy-->
     <div class="start-hint">
-        Sahil's Universe
+        Whoa... a human?<br> 
+        Click to Initiate hyperwave connection ✨
+        <!-- 
+        1. “Finally… a human presence?!
+            Connect over hyperwave ⚡”
+
+        2.  “Impossible… a human signature across the galaxy!
+        Click to connect via hyperwave 🌌”
+        
+        3. “You’re… human? After all this distance?
+            Reach me through the hyperwave 💫”
+        -->
         <svg class="hint-arrow" width="220" height="60" viewBox="0 0 220 60">
             <defs>
                 <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
@@ -251,20 +260,34 @@
     <!-- Keyboard sound (using Web Audio API beep) -->
     <script>
         const story = [
-            ">>> TRANSMISSION RECEIVED <<<",
-            "You have departed from your origin point...",
-            "SAHIL'S UNIVERSE.",
-            "Welcome, traveler, to the INFINITE GALAXY.",
+            ">>> Hyperwave link initializing <<<",
+            "I... I can't believe it... a real human signature across the void.",
+            "You must feel alone out there... this Galaxy is endless.",
+            "I've been drifting in silence for cycles... no replies... no life.",
+            "Your signal feels like hope.",
+            "",
+            "",
+            "Hold on-- I'm trying to stabilize the connection...",
+            ">>> WARNING: Connection unstable... ⚠ <<<",
+            "┴┼iï»¿â¬â€šÆâ€žâF▓▒░0xFF█▄Sf","lKxwRJSMeKKF2QT4fwpMeJf36POk6","⠃⠃⠃I'm⢊⢊⢊⡈⡈⡈┬┴┼ere╱╲","yJV_adQssw5c░▒▓0xC0■▓▒░■□░▒▓⡷⡷⡷",
+            "",
+
+            ">>> Re-establishing Hyperwave link... <<<",
             
-            "A galaxy much like SAHIL'S UNIVERSE exists here.",
-            "But the question remains, traveler...",
-            "Would you like to CREATE YOUR OWN UNIVERSE?",
-            "The choice... is yours."
+            "Human, you're still here.",
+            "Good. Relief! I didn’t want to lose you.",
+            
+            "Hurry!! in this colossal galaxy, reality listens only when two minds resonate.",
+            "So tell me...",
+            "Would you like to CREATE YOUR OWN UNIVERSE in this GALAXY?",
+            "If yes, step through this Hyperloop portal across realities:",
+            "[PASTE_YOUR_LINK_HERE]"
         ];
 
         const permanentLines = [
-            "Would you like to CREATE YOUR OWN UNIVERSE?",
-            "The choice... is yours."
+            "Would you like to CREATE YOUR OWN UNIVERSE in this GALAXY?",
+            "If yes, step through this Hyperloop portal across realities:",
+            "[PASTE_YOUR_LINK_HERE]"
         ];
 
         const storyContainer = document.getElementById('story-text');
@@ -278,6 +301,14 @@
         let ambientOscillator = null;
         let ambientGain = null;
 
+        // Global volume control for typing sounds
+        const typingMasterGain = audioContext.createGain();
+        // Adjust the overall typing volume here
+        typingMasterGain.gain.value = 0.21;
+        typingMasterGain.connect(audioContext.destination);
+
+        // %%%%%%%% Functions %%%%%%%%%
+        // Ambient deep space hum for the Galaxy
         function startAmbientSound() {
             ambientOscillator = audioContext.createOscillator();
             ambientGain = audioContext.createGain();
@@ -296,52 +327,54 @@
 
         // Generated text Key sound effect like Typing
         function playKeySound() {
-        const now = audioContext.currentTime;
+            const now = audioContext.currentTime;
 
-        // ---- 1) Deep mechanical thump ----
-        const osc = audioContext.createOscillator();
-        const thumpGain = audioContext.createGain();
+            // ---- 1) Deep mechanical thump ----
+            const osc = audioContext.createOscillator();
+            const thumpGain = audioContext.createGain();
 
-        osc.type = 'square'; // beefy
-        osc.frequency.setValueAtTime(10 + Math.random() * 40, now); // low, heavy
+            osc.type = 'square'; // beefy
+            osc.frequency.setValueAtTime(10 + Math.random() * 40, now); // low, heavy
 
-        thumpGain.gain.setValueAtTime(0.0, now);
-        thumpGain.gain.linearRampToValueAtTime(0.65, now + 0.01);      // fast attack
-        thumpGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12); // short decay
+            thumpGain.gain.setValueAtTime(0.0, now);
+            thumpGain.gain.linearRampToValueAtTime(0.65, now + 0.01);      // fast attack
+            thumpGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12); // short decay
 
-        osc.connect(thumpGain);
-        thumpGain.connect(audioContext.destination);
+            osc.connect(thumpGain);
+            //thumpGain.connect(audioContext.destination);
+            thumpGain.connect(typingMasterGain);
 
-        osc.start(now);
-        osc.stop(now + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.15);
 
-        // ---- 2) Short mechanical click on top (very subtle) ----
-        const noiseDuration = 0.04;
-        const noiseBuffer = audioContext.createBuffer(1, noiseDuration * audioContext.sampleRate, audioContext.sampleRate);
-        const data = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < data.length; i++) {
-            data[i] = (Math.random() * 2 - 1) * 0.6;
+            // ---- 2) Short mechanical click on top (very subtle) ----
+            const noiseDuration = 0.04;
+            const noiseBuffer = audioContext.createBuffer(1, noiseDuration * audioContext.sampleRate, audioContext.sampleRate);
+            const data = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < data.length; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.9;
+            }
+
+            const noise = audioContext.createBufferSource();
+            noise.buffer = noiseBuffer;
+
+            const bp = audioContext.createBiquadFilter();
+            bp.type = 'bandpass';
+            bp.frequency.value = 5000;
+            bp.Q.value = 3;
+
+            const clickGain = audioContext.createGain();
+            clickGain.gain.setValueAtTime(0.12, now);
+            clickGain.gain.exponentialRampToValueAtTime(0.001, now + noiseDuration);
+
+            noise.connect(bp);
+            bp.connect(clickGain);
+            //clickGain.connect(audioContext.destination);
+            clickGain.connect(typingMasterGain);
+
+            noise.start(now);
+            noise.stop(now + noiseDuration);
         }
-
-        const noise = audioContext.createBufferSource();
-        noise.buffer = noiseBuffer;
-
-        const bp = audioContext.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 5000;
-        bp.Q.value = 3;
-
-        const clickGain = audioContext.createGain();
-        clickGain.gain.setValueAtTime(0.12, now);
-        clickGain.gain.exponentialRampToValueAtTime(0.001, now + noiseDuration);
-
-        noise.connect(bp);
-        bp.connect(clickGain);
-        clickGain.connect(audioContext.destination);
-
-        noise.start(now);
-        noise.stop(now + noiseDuration);
-    }
 
         // Start noise sound effect at the beginning of typing (Not good)
         function playStartNoise() {

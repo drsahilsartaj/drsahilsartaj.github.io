@@ -14,6 +14,8 @@
             overflow: hidden; 
             background: #000; 
         }
+
+
         
         /* Hide the original three.js header*/
         iframe { 
@@ -31,7 +33,7 @@
             background: rgba(0,0,0,0.9); 
             border: 2px solid #00fff5;
             color: #00fff5; 
-            padding: 12px 24px; 
+            padding: 12px 40px; 
             border-radius: 8px;
             cursor: pointer; 
             font-family: 'Orbitron', sans-serif;
@@ -140,30 +142,42 @@
             50%, 100% { opacity: 0; }
         }
 
-        .sound-btn {
+    .start-hint {
         position: fixed;
-        top: 70px;          /* just below Back button */
-        left: 20px;
+        top: 120px;
+        left: 40px;
         z-index: 10000;
-        background: rgba(0,0,0,0.7);
-        border: 2px solid #00fff5;
-        color: #00fff5;
-        padding: 8px 18px;
-        border-radius: 6px;
-        cursor: pointer;
         font-family: 'Orbitron', sans-serif;
         font-size: 12px;
-        text-decoration: none;
-        display: inline-block;
-        transition: 0.3s ease;
-        box-shadow: 0 0 10px rgba(0,255,245,0.3);
-    }
-    .sound-btn:hover {
-        background: rgba(0,255,245,0.2);
+        color: #00fff5;
+        opacity: 0.85;
+        cursor: pointer;
+        user-select: none;
+        transition: opacity 0.5s ease;
+        text-shadow: 0 0 10px rgba(0,255,245,0.8);
     }
 
+    .start-hint .arrow {
+        animation: bounce 1.2s infinite;
+    }
 
-            
+    @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+    }
+
+    .start-hint.fade-out {
+    opacity: 0;
+    pointer-events: none;
+    }
+
+    .click-catcher {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: transparent;
+    }
+
         
         /* @keyframes fadeIn {
             to { opacity: 1; }
@@ -173,6 +187,14 @@
 </head>
 
 <body>
+
+    <!-- Start hint with arrow in the Galaxy -->
+    <div class="start-hint">Sahil's Universe <span class="arrow">&Darr;</span></div>
+    <div class="click-catcher"></div>
+
+
+
+
     <!-- Galaxy iframe -->
     <iframe src="../three.js/examples/webgpu_tsl_galaxy.html"></iframe>
 
@@ -186,8 +208,6 @@
         <span>&larr;</span>
         <span>Back to Sahil's Universe</span>
     </a>
-
-    <a id="sound-btn" class="sound-btn">Wanna feel Infinity?</a>
 
 
     <!-- Keyboard sound (using Web Audio API beep) -->
@@ -363,15 +383,51 @@
             }
         }
 
-        // Start ambient sound immediately
+        let universeSoundStarted = false;
+
+        function startHumIfNeeded() {
+            if (!universeSoundStarted) {
+            audioContext.resume();
+            startAmbientSound();
+            universeSoundStarted = true;
+
+            // remove the click catcher so iframe becomes clickable again
+            document.querySelector('.click-catcher').remove();
+            }
+        }
+
+        document.querySelector('.click-catcher').addEventListener('click', startHumIfNeeded);
+
+
+
+        // // first click anywhere to start universe sound only
+        // document.addEventListener('click', () => {
+        //     if (!universeSoundStarted) {
+        //         audioContext.resume();
+        //         startAmbientSound();
+        //         universeSoundStarted = true;
+        //     }
+        // });
+
+        // click on "Sahil's Universe downarrow" start text
+        const startHint = document.querySelector('.start-hint');
+
+        startHint.addEventListener('click', () => {
+            setTimeout(typeWriter, 500); // start story a bit after click
+            startHint.classList.add('fade-out'); // hide the hint
+        });
+
+
+
+        // // Start ambient sound immediately
+        // // startAmbientSound();
+        // document.getElementById('sound-btn').addEventListener('click', () => {
+        // audioContext.resume();
         // startAmbientSound();
-        document.getElementById('sound-btn').addEventListener('click', () => {
-        audioContext.resume();
-        startAmbientSound();
-    });
+        // });
 
         // Start typing after 2 seconds
-        setTimeout(typeWriter, 2000);
+        // setTimeout(typeWriter, 2000);
     
     </script>
 

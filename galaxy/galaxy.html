@@ -147,19 +147,33 @@
         position: fixed;
         /*top: 330px; /*120px to move down*/
         top: 50vh; /* closer to the galaxy band*/
+        
         /*left: 400px; /* 40px adjust from left towards right*/
-        left: 39vw; /*move more towards the centre so 22vw to center better on different screens*/
+        left: 18vw; /*move more towards the centre so 39vw to center better on different screens*/
+        
         z-index: 10000;
         font-family: 'Orbitron', sans-serif;
-        font-size: 12px;
+        font-size: 16px;
         color: #ffffff;
-        opacity: 0.99;
+        opacity: 0.95;
         cursor: pointer;
         user-select: none;
         transition: opacity 0.5s ease;
-        text-shadow: 0 0 10px rgba(0,255,245,0.8);
+        /* text-shadow: 0 0 10px rgba(0,255,245,0.8); */
+        text-shadow:
+            0 0 12px rgba(0, 255, 195, 0.9),
+            0 0 25px rgba(0,255,245,0.6);
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
+    .hint-arrow {
+        filter:
+        drop-shadow(0 0 10px rgba(255,255,255,0.9))
+        drop-shadow(0 0 20px rgba(0,255,245,0.7)); 
+    }
+    
     .start-hint .arrow {
         animation: bounce 1.2s infinite;
     }
@@ -191,12 +205,33 @@
 
 <body>
 
-    <!-- Start hint with arrow in the Galaxy -->
-    <div class="start-hint">Sahil's Universe <span class="arrow">&rarr;</span></div>
+    <!-- Start hint with arrow in the Galaxy
+    <div class="start-hint">Sahil's Universe <span class="arrow">&rarr;</span></div> -->
+    
     <div class="click-catcher"></div>
 
-
-
+    <!-- Curve point hint with arrow in the Galaxy-->
+    <div class="start-hint">
+        Sahil's Universe
+        <svg class="hint-arrow" width="220" height="60" viewBox="0 0 220 60">
+            <defs>
+                <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                    <!-- thinner, sharper triangle -->
+                    <polygon points="0 1, 7 4, 0 7" fill="#ffffff"/>
+                </marker>
+            </defs>
+    
+            <!-- thin, subtle, glowing curve -->
+            <path d="M-10,33 Q190,10 210,33"
+                  stroke="#ffffff"
+                  stroke-width="0.8"
+                  stroke-linecap="round"
+                  stroke-opacity="0.4"
+                  fill="none"
+                  marker-end="url(#arrowhead)" 
+            />
+        </svg>
+    </div>
 
     <!-- Galaxy iframe -->
     <iframe src="../three.js/examples/webgpu_tsl_galaxy.html"></iframe>
@@ -259,27 +294,79 @@
             ambientOscillator.start();
         }
 
-        // Key sound effect
+        // Generated text Key sound effect like Typing
         function playKeySound() {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            const filter = audioContext.createBiquadFilter();
-            
-            oscillator.connect(filter);
-            filter.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 1200 + Math.random() * 400;
-            oscillator.type = 'square';
+        const now = audioContext.currentTime;
 
-            filter.type = 'lowpass';
-            filter.frequency.value = 2000;
-            
-            gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.04);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.04);
+        // ---- 1) Deep mechanical thump ----
+        const osc = audioContext.createOscillator();
+        const thumpGain = audioContext.createGain();
+
+        osc.type = 'square'; // beefy
+        osc.frequency.setValueAtTime(10 + Math.random() * 40, now); // low, heavy
+
+        thumpGain.gain.setValueAtTime(0.0, now);
+        thumpGain.gain.linearRampToValueAtTime(0.65, now + 0.01);      // fast attack
+        thumpGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12); // short decay
+
+        osc.connect(thumpGain);
+        thumpGain.connect(audioContext.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.15);
+
+        // ---- 2) Short mechanical click on top (very subtle) ----
+        const noiseDuration = 0.04;
+        const noiseBuffer = audioContext.createBuffer(1, noiseDuration * audioContext.sampleRate, audioContext.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+            data[i] = (Math.random() * 2 - 1) * 0.6;
+        }
+
+        const noise = audioContext.createBufferSource();
+        noise.buffer = noiseBuffer;
+
+        const bp = audioContext.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = 5000;
+        bp.Q.value = 3;
+
+        const clickGain = audioContext.createGain();
+        clickGain.gain.setValueAtTime(0.12, now);
+        clickGain.gain.exponentialRampToValueAtTime(0.001, now + noiseDuration);
+
+        noise.connect(bp);
+        bp.connect(clickGain);
+        clickGain.connect(audioContext.destination);
+
+        noise.start(now);
+        noise.stop(now + noiseDuration);
+    }
+
+        // Start noise sound effect at the beginning of typing (Not good)
+        function playStartNoise() {
+            const duration = 0.5; // 250ms
+            const sampleRate = audioContext.sampleRate;
+
+            const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < data.length; i++) {
+                // white noise, slightly tamed
+                data[i] = (Math.random() * 2 - 1) * 0.4;
+            }
+
+            const noise = audioContext.createBufferSource();
+            const gain = audioContext.createGain();
+
+            noise.buffer = buffer;
+            noise.connect(gain);
+            gain.connect(audioContext.destination);
+
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+            noise.start();
         }
 
         function fadeOldLines() {
@@ -293,19 +380,6 @@
             }
         }
 
-        
-        // function typeWriter() {
-        //     if(currentLine >= story.length) {
-        //         // Story finished
-        //         const cursor = document.querySelector('.cursor');
-        //         if (cursor) cursor.remove();
-
-        //         // Stop ambient sound
-        //         if (ambientGain) {
-        //             ambientGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 3);
-        //         }
-        //         return;
-        //     }
 
         function typeWriter() {
             if (currentLine >= story.length) {
@@ -402,35 +476,16 @@
         document.querySelector('.click-catcher').addEventListener('click', startHumIfNeeded);
 
 
-
-        // // first click anywhere to start universe sound only
-        // document.addEventListener('click', () => {
-        //     if (!universeSoundStarted) {
-        //         audioContext.resume();
-        //         startAmbientSound();
-        //         universeSoundStarted = true;
-        //     }
-        // });
-
         // click on "Sahil's Universe downarrow" start text
         const startHint = document.querySelector('.start-hint');
 
         startHint.addEventListener('click', () => {
-            setTimeout(typeWriter, 500); // start story a bit after click
+            playStartNoise(); // radio noise
+            setTimeout(typeWriter, 1000); // start txt right after noise
             startHint.classList.add('fade-out'); // hide the hint
         });
 
 
-
-        // // Start ambient sound immediately
-        // // startAmbientSound();
-        // document.getElementById('sound-btn').addEventListener('click', () => {
-        // audioContext.resume();
-        // startAmbientSound();
-        // });
-
-        // Start typing after 2 seconds
-        // setTimeout(typeWriter, 2000);
     
     </script>
 

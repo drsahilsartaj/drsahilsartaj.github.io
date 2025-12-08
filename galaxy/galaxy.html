@@ -142,15 +142,18 @@
             50%, 100% { opacity: 0; }
         }
 
+        
     .start-hint {
         position: fixed;
-        top: 120px;
-        left: 40px;
+        /*top: 330px; /*120px to move down*/
+        top: 50vh; /* closer to the galaxy band*/
+        /*left: 400px; /* 40px adjust from left towards right*/
+        left: 39vw; /*move more towards the centre so 22vw to center better on different screens*/
         z-index: 10000;
         font-family: 'Orbitron', sans-serif;
         font-size: 12px;
-        color: #00fff5;
-        opacity: 0.85;
+        color: #ffffff;
+        opacity: 0.99;
         cursor: pointer;
         user-select: none;
         transition: opacity 0.5s ease;
@@ -189,7 +192,7 @@
 <body>
 
     <!-- Start hint with arrow in the Galaxy -->
-    <div class="start-hint">Sahil's Universe <span class="arrow">&Darr;</span></div>
+    <div class="start-hint">Sahil's Universe <span class="arrow">&rarr;</span></div>
     <div class="click-catcher"></div>
 
 

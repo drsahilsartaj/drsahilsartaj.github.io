@@ -74,6 +74,10 @@
             pointer-events: none;
         }
 
+        .story-overlay a {
+            pointer-events: auto;
+        }
+
 
 
         .story-container {
@@ -265,29 +269,27 @@
             "You must feel alone out there... this Galaxy is endless.",
             "I've been drifting in silence for cycles... no replies... no life.",
             "Your signal feels like hope.",
-            "",
-            "",
-            "Hold on-- I'm trying to stabilize the connection...",
-            ">>> WARNING: Connection unstable... ⚠ <<<",
-            "┴┼iï»¿â¬â€šÆâ€žâF▓▒░0xFF█▄Sf","lKxwRJSMeKKF2QT4fwpMeJf36POk6","⠃⠃⠃I'm⢊⢊⢊⡈⡈⡈┬┴┼ere╱╲","yJV_adQssw5c░▒▓0xC0■▓▒░■□░▒▓⡷⡷⡷",
-            "",
-
-            ">>> Re-establishing Hyperwave link... <<<",
+            "I €žâF▓▒░0 ¿â  FF »¬â€š",
+            "WARNING ⚠: Connection unstable!",
+            "...",
+            "┴┼iïÆâx█▄Sf   ⠃⠃⠃ I'm ⢊⢊⢊⡈⡈⡈ ┬┴┼ere╱╲",
+            ">>> Re-establishing Hyperwave link <<<",
             
             "Human, you're still here.",
             "Good. Relief! I didn’t want to lose you.",
             
             "Hurry!! in this colossal galaxy, reality listens only when two minds resonate.",
+            
             "So tell me...",
             "Would you like to CREATE YOUR OWN UNIVERSE in this GALAXY?",
             "If yes, step through this Hyperloop portal across realities:",
-            "[PASTE_YOUR_LINK_HERE]"
+            "[DISCORD_PORTAL]"
         ];
 
         const permanentLines = [
             "Would you like to CREATE YOUR OWN UNIVERSE in this GALAXY?",
             "If yes, step through this Hyperloop portal across realities:",
-            "[PASTE_YOUR_LINK_HERE]"
+            "[DISCORD_PORTAL]"
         ];
 
         const storyContainer = document.getElementById('story-text');
@@ -431,24 +433,30 @@
             
             const lineDiv = document.getElementById(`line-${currentLine}`);
 
-            // if (currentChar < line.length) {
-            //     const char = line[currentChar];
+            // Discord portal link
+            if (line === "[DISCORD_PORTAL]") {
+                const link = document.createElement("a");
+                link.href = "https://discord.gg/bp3ramcHKZ";
+                link.target = "_blank";
+                link.textContent = "🚀 ENTER THE HYPERWAVE PORTAL";
                 
-            //     // Remove cursor
-            //     const cursor = lineDiv.querySelector('.cursor');
-            //     if (cursor) cursor.remove();
-                
-            //     // Add character
-            //     lineDiv.appendChild(document.createTextNode(char));
-                
-            //     // Add cursor
-            //     const newCursor = document.createElement('span');
-            //     newCursor.className = 'cursor';
-            //     lineDiv.appendChild(newCursor);
-                
-            //     if (char !== ' ' && char !== '.') {
-            //         playKeySound();
-            //     }
+                // Styling to match your galaxy theme:
+                link.style.color = "#00fff5";
+                link.style.textShadow = "0 0 12px rgba(0,255,245,0.9), 0 0 25px rgba(0,255,245,0.6)";
+                link.style.fontWeight = "bold";
+                link.style.textDecoration = "none";
+
+                lineDiv.appendChild(link);
+
+                // Skip normal typing for this line
+                currentLine++;
+                currentChar = 0;
+
+                // Move to next line after a small pause
+                setTimeout(typeWriter, 1500);
+                return;
+            }
+
             if (currentChar < line.length) {
                 const char = line[currentChar];
 

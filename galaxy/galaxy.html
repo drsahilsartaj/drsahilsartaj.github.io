@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,45 +10,48 @@
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
     <style>
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            background: #000; 
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            position: relative;
         }
-        
+
         /* Hide the original three.js header*/
-        iframe { 
-            width: 100%; 
+        iframe {
+            width: 100%;
             height: 100vh;
-            border: none; 
-            display: block; 
+            border: none;
+            display: block;
         }
+
         /* Back button */
-        .back-btn { 
-            position: fixed; 
-            top: 20px; 
-            left: 20px; 
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
             z-index: 10000;
-            background: rgba(0,0,0,0.9); 
+            background: rgba(0, 0, 0, 0.9);
             border: 2px solid #00fff5;
-            color: #00fff5; 
-            padding: 12px 40px; 
+            color: #00fff5;
+            padding: 12px 40px;
             border-radius: 8px;
-            cursor: pointer; 
+            cursor: pointer;
             font-family: 'Orbitron', sans-serif;
             font-size: 14px;
             font-family: 600;
-            text-decoration: none; 
+            text-decoration: none;
             display: flex;
-            align-items: center; 
+            align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(0,255,245,0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 245, 0.3);
         }
-        .back-btn:hover { 
-            background: rgba(0,255,245,0.2); 
+
+        .back-btn:hover {
+            background: rgba(0, 255, 245, 0.2);
             transform: translateX(-3px);
-            box-shadow: 0 0 50px rgba(0,255,245,0.5);
+            box-shadow: 0 0 50px rgba(0, 255, 245, 0.5);
         }
 
         .story-overlay {
@@ -111,61 +115,76 @@
             background: #ffffff;
             margin-left: 2px;
             animation: blink 0.8s infinite;
-            box-shadow: 
+            box-shadow:
                 0 0 5px rgba(255, 255, 245, 1),
                 0 0 10px rgba(0, 255, 245, 0.8);
             vertical-align: middle;
         }
-        
+
         @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
+
+            0%,
+            49% {
+                opacity: 1;
+            }
+
+            50%,
+            100% {
+                opacity: 0;
+            }
         }
 
-        
+
         .start-hint {
-            position: fixed;
-            /*top: 330px; /*120px to move down*/
-            top: 50vh; /* closer to the galaxy band*/
-            
-            /*left: 400px; /* 40px adjust from left towards right*/
-            left: 18vw; /*move more towards the centre so 39vw to center better on different screens*/
-            
+            position: absolute;
+            top: 50vh;
+            /* closer to the center*/
+            left: 18vw;
+            /*move more towards the centre so 39vw to center better on different screens*/
+
             z-index: 10000;
             font-family: 'Orbitron', sans-serif;
-            font-size: 16px;
+            font-size: 1.2vw;
             color: #ffffff;
             opacity: 0.95;
             cursor: pointer;
             user-select: none;
-            transition: opacity 0.5s ease;
+            /* transition: font-size 120ms ease; */
             /* text-shadow: 0 0 10px rgba(0,255,245,0.8); */
             text-shadow:
                 0 0 12px rgba(0, 255, 195, 0.9),
-                0 0 25px rgba(0,255,245,0.6);
+                0 0 25px rgba(0, 255, 245, 0.6);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.6vw;
+            transform-origin: left center;
         }
 
         .hint-arrow {
             filter:
-            drop-shadow(0 0 10px rgba(255,255,255,0.9))
-            drop-shadow(0 0 20px rgba(0,255,245,0.7)); 
+                drop-shadow(0 0 10px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 20px rgba(0, 255, 245, 0.7));
         }
-        
+
         .start-hint .arrow {
             animation: bounce 1.2s infinite;
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(4px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(4px);
+            }
         }
 
         .start-hint.fade-out {
             opacity: 0;
             pointer-events: none;
+            transition: opacity 0.5s ease;
         }
 
         .click-catcher {
@@ -184,44 +203,44 @@
             z-index: 20000;
             pointer-events: none;
             background: radial-gradient(ellipse at center,
-                rgba(0,0,0,0) 0%,
-                rgba(0,0,0,0.2) 40%,
-                rgba(0,0,0,0.6) 70%,
-                rgba(0,0,0,0.9) 100%);
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(0, 0, 0, 0.2) 40%,
+                    rgba(0, 0, 0, 0.6) 70%,
+                    rgba(0, 0, 0, 0.9) 100%);
         }
 
         #warp-overlay.active {
             display: flex;
             pointer-events: none;
             animation: overlay-fade-in 0.25s linear;
-        } 
-        
+        }
+
         /* core glowing ring that scales */
         .warp-core {
             width: 28vmin;
             height: 28vmin;
             border-radius: 50%;
             background: conic-gradient(from 120deg,
-                rgba(0,255,245,0.06),
-                rgba(0,255,245,0.18),
-                rgba(255,255,255,0.02),
-                rgba(0,255,245,0.12));
+                    rgba(0, 255, 245, 0.06),
+                    rgba(0, 255, 245, 0.18),
+                    rgba(255, 255, 255, 0.02),
+                    rgba(0, 255, 245, 0.12));
             box-shadow:
-                0 0 40px rgba(0,255,245,0.08),
-                0 0 120px rgba(0,255,245,0.06),
-                inset 0 0 24px rgba(255,255,255,0.02);
+                0 0 40px rgba(0, 255, 245, 0.08),
+                0 0 120px rgba(0, 255, 245, 0.06),
+                inset 0 0 24px rgba(255, 255, 255, 0.02);
             transform: scale(0.6);
             filter: blur(6px);
             opacity: 0.95;
-            animation: warp-core-scale var(--warp-ms, 2000ms) cubic-bezier(.2,.9,.3,1) forwards;
+            animation: warp-core-scale var(--warp-ms, 2000ms) cubic-bezier(.2, .9, .3, 1) forwards;
         }
 
         /* fast streaks (gives speed-of-light feel) */
-        .warp-streaks{
+        .warp-streaks {
             position: absolute;
             inset: -20%;
             background-image:
-                linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.0) 100%);
+                linear-gradient(90deg, rgba(255, 255, 255, 0.0) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.0) 100%);
             background-size: 200% 2px;
             transform: translateZ(0);
             mix-blend-mode: screen;
@@ -231,33 +250,67 @@
         }
 
         /* keyframes */
-        @keyframes warp-core-scale{
-            0%   { transform: scale(0.6) rotate(0deg); filter: blur(8px); opacity: 0.8; }
-            40%  { transform: scale(1.4) rotate(45deg); filter: blur(2px); opacity: 1; }
-            100% { transform: scale(4.2) rotate(170deg); filter: blur(12px); opacity: 0; }
+        @keyframes warp-core-scale {
+            0% {
+                transform: scale(0.6) rotate(0deg);
+                filter: blur(8px);
+                opacity: 0.8;
+            }
+
+            40% {
+                transform: scale(1.4) rotate(45deg);
+                filter: blur(2px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(4.2) rotate(170deg);
+                filter: blur(12px);
+                opacity: 0;
+            }
         }
 
-        @keyframes streaks-move{
-            0%   { opacity: 0; background-position: 0% 0%; transform: translateY(0) scale(1); }
-            10%  { opacity: 0.6; }
-            60%  { background-position: 100% 0%; opacity: 0.95; transform: scale(1.2) translateY(-4%); }
-            100% { opacity: 0; transform: scale(1.8) translateY(-10%); }
+        @keyframes streaks-move {
+            0% {
+                opacity: 0;
+                background-position: 0% 0%;
+                transform: translateY(0) scale(1);
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            60% {
+                background-position: 100% 0%;
+                opacity: 0.95;
+                transform: scale(1.2) translateY(-4%);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.8) translateY(-10%);
+            }
         }
-        
+
         @keyframes overlay-fade-in {
-            from { background-color: rgba(0,0,0,0); }
-            to   { background-color: rgba(0,0,0,0.55); }
+            from {
+                background-color: rgba(0, 0, 0, 0);
+            }
+
+            to {
+                background-color: rgba(0, 0, 0, 0.55);
+            }
         }
 
 
 
 
 
-            
-            /* @keyframes fadeIn {
+
+        /* @keyframes fadeIn {
                 to { opacity: 1; }
             } */
-
     </style>
 </head>
 
@@ -265,12 +318,12 @@
 
     <!-- Start hint with arrow in the Galaxy
     <div class="start-hint">Sahil's Universe <span class="arrow">&rarr;</span></div> -->
-    
+
     <div class="click-catcher"></div>
 
     <!-- Curve point hint with arrow in the Galaxy-->
     <div class="start-hint">
-        Whoa... a human?<br> 
+        Whoa... a human?<br>
         Click to Initiate hyperwave connection ✨
         <!-- 
         1. “Finally… a human presence?!
@@ -282,23 +335,18 @@
         3. “You’re… human? After all this distance?
             Reach me through the hyperwave 💫”
         -->
-        <svg class="hint-arrow" width="220" height="60" viewBox="0 0 220 60">
+        <!-- <svg class="hint-arrow" width="220" height="60" viewBox="0 0 220 60"> -->
+        <svg class="hint-arrow" viewBox="0 0 220 60" style="width: 12vw; height: auto;">
             <defs>
                 <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
                     <!-- thinner, sharper triangle -->
-                    <polygon points="0 1, 7 4, 0 7" fill="#ffffff"/>
+                    <polygon points="0 1, 7 4, 0 7" fill="#ffffff" />
                 </marker>
             </defs>
-    
+
             <!-- thin, subtle, glowing curve -->
-            <path d="M-10,33 Q190,10 210,33"
-                  stroke="#ffffff"
-                  stroke-width="0.8"
-                  stroke-linecap="round"
-                  stroke-opacity="0.4"
-                  fill="none"
-                  marker-end="url(#arrowhead)" 
-            />
+            <path d="M-10,33 Q190,10 210,33" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round"
+                stroke-opacity="0.4" fill="none" marker-end="url(#arrowhead)" />
         </svg>
     </div>
 
@@ -317,35 +365,35 @@
     </a>
 
     <!-- Wrap-Overlay -->
-     <div id="warp-overlay" aria-hidden="true">
+    <div id="warp-overlay" aria-hidden="true">
         <div class="warp-streaks"></div>
         <div class="warp-core"></div>
-     </div>
+    </div>
 
     <!-- Keyboard sound (using Web Audio API beep) -->
     <script>
         const story = [
-            // ">>> Hyperwave link initializing <<<",
-            // "I... I can't believe it... a real human signature across the void.",
-            // "You must feel alone out there... this Galaxy is endless.",
-            // "I've been drifting in silence for cycles... no replies... no life.",
-            // "Your signal feels like hope.",
-            // "I €žâF▓▒░0 ¿â  FF »¬â€š",
-            // "WARNING ⚠: Connection unstable!",
-            // "...",
-            // "┴┼iïÆâx█▄Sf   ⠃⠃⠃ I'm ⢊⢊⢊⡈⡈⡈ ┬┴┼ere╱╲",
-            // ">>> Re-establishing Hyperwave link <<<",
-            
-            // "Human, you're still here.",
-            // "Good. Relief! I didn’t want to lose you.",
-            
-            // "Hurry!! in this colossal galaxy, reality listens only when two minds resonate.",
-            
-            // "So tell me...",
-            // "Would you like to CREATE YOUR OWN UNIVERSE in this GALAXY?",
-            // "If yes, Come through the Hyperwave Doorway across realities",
-            
-            
+            ">>> Hyperwave link initializing <<<",
+            "I... I can't believe it... a real human signature across the void.",
+            "You must feel alone out there... this Galaxy is endless.",
+            "I've been drifting in silence for cycles... no replies... no life.",
+            "Your signal feels like hope.",
+            "I €žâF▓▒░0 ¿â  FF »¬â€š",
+            "WARNING ⚠: Connection unstable!",
+            "...",
+            "┴┼iïÆâx█▄Sf   ⠃⠃⠃ I'm ⢊⢊⢊⡈⡈⡈ ┬┴┼ere╱╲",
+            ">>> Re-establishing Hyperwave link <<<",
+
+            "Human, you're still here.",
+            "Good. Relief! I didn’t want to lose you.",
+
+            "Hurry!! in this colossal galaxy, reality listens only when two minds resonate.",
+
+            "So tell me...",
+            "Would you like to CREATE YOUR OWN UNIVERSE in this GALAXY?",
+            "If yes, Come through the Hyperwave Doorway across realities",
+
+
             "[DISCORD_PORTAL]"
         ];
 
@@ -358,9 +406,9 @@
         const storyContainer = document.getElementById('story-text');
         let currentLine = 0;
         let currentChar = 0;
-        
+
         // const maxVisibleLines = 8;
-        
+
         // Audio setup
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let ambientOscillator = null;
@@ -377,16 +425,16 @@
         function startAmbientSound() {
             ambientOscillator = audioContext.createOscillator();
             ambientGain = audioContext.createGain();
-            
+
             ambientOscillator.connect(ambientGain);
             ambientGain.connect(audioContext.destination);
-            
+
             ambientOscillator.frequency.value = 455; // Deep space hum
             ambientOscillator.type = 'triangle'; // 'sine', 'triangle', 'sawtooth', 'square'
-            
+
             ambientGain.gain.setValueAtTime(0, audioContext.currentTime);
             ambientGain.gain.linearRampToValueAtTime(0.025, audioContext.currentTime + 2);
-            
+
             ambientOscillator.start();
         }
 
@@ -487,14 +535,14 @@
 
             const line = story[currentLine];
             const isPermanent = permanentLines.includes(line);
-            
+
             if (currentChar === 0) {
                 const lineDiv = document.createElement('div');
                 lineDiv.className = 'story-line' + (isPermanent ? ' permanent' : '');
                 lineDiv.id = `line-${currentLine}`;
                 storyContainer.appendChild(lineDiv);
             }
-            
+
             const lineDiv = document.getElementById(`line-${currentLine}`);
 
             // Discord portal link
@@ -503,7 +551,7 @@
                 link.href = "https://discord.gg/bp3ramcHKZ";
                 link.target = "_blank";
                 link.textContent = "ENTER THE HYPERWAVE PORTAL";
-                
+
                 // Styling to match your galaxy theme:
                 link.style.color = "#00fff5";
                 link.style.textShadow = "0 0 12px rgba(0,255,245,0.9), 0 0 25px rgba(0,255,245,0.6)";
@@ -535,20 +583,20 @@
 
                 if (char !== ' ' && char !== '.') {
                     playKeySound();
-                }      
+                }
                 /////////////////////////
 
                 currentChar++;
-                
+
                 // const speed = line === '...' ? 800 : (100 + Math.random() * 50);
                 const speed = line === '...' ? 800 : (100 + Math.random() * 50);
                 setTimeout(typeWriter, speed);
-            } 
+            }
             else {
                 // Remove cursor after line finishes
                 const cursor = lineDiv.querySelector('.cursor');
                 if (cursor) cursor.remove();
-                
+
                 // Fade away non-permanent lines after 3 seconds
                 if (!isPermanent) {
                     setTimeout(() => {
@@ -556,10 +604,10 @@
                         setTimeout(() => lineDiv.remove(), 2000);
                     }, 1000); // Delay before starting fade
                 }
-                
+
                 currentLine++;
                 currentChar = 0;
-                
+
                 const pause = 2000 + Math.random() * 1000;
                 setTimeout(typeWriter, pause);
             }
@@ -569,12 +617,12 @@
 
         function startHumIfNeeded() {
             if (!universeSoundStarted) {
-            audioContext.resume();
-            startAmbientSound();
-            universeSoundStarted = true;
+                audioContext.resume();
+                startAmbientSound();
+                universeSoundStarted = true;
 
-            // remove the click catcher so iframe becomes clickable again
-            document.querySelector('.click-catcher').remove();
+                // remove the click catcher so iframe becomes clickable again
+                document.querySelector('.click-catcher').remove();
             }
         }
 
@@ -630,8 +678,8 @@
                 const n = 4096;
                 const curve = new Float32Array(n);
                 for (let i = 0; i < n; ++i) {
-                const x = (i * 2) / n - 1;
-                curve[i] = ((3 + k) * x * 20 * (Math.PI/180)) / (Math.PI + k * Math.abs(x));
+                    const x = (i * 2) / n - 1;
+                    curve[i] = ((3 + k) * x * 20 * (Math.PI / 180)) / (Math.PI + k * Math.abs(x));
                 }
                 return curve;
             }
@@ -677,12 +725,28 @@
             boom.start(now); growlOsc.start(now); sweepOsc.start(now + 0.05); noiseSrc.start(now + 0.02);
             boom.stop(now + duration + 0.05); growlOsc.stop(now + duration + 0.05); sweepOsc.stop(now + duration + 0.05); noiseSrc.stop(now + noiseDur + 0.02);
 
-            setTimeout(()=>{ try{ boom.disconnect(); growlOsc.disconnect(); sweepOsc.disconnect(); noiseSrc.disconnect(); boomGain.disconnect(); growlGain.disconnect(); sh.disconnect(); finalLP.disconnect(); master.disconnect(); }catch(e){} }, (duration+0.2)*1000);
+            setTimeout(() => { try { boom.disconnect(); growlOsc.disconnect(); sweepOsc.disconnect(); noiseSrc.disconnect(); boomGain.disconnect(); growlGain.disconnect(); sh.disconnect(); finalLP.disconnect(); master.disconnect(); } catch (e) { } }, (duration + 0.2) * 1000);
+        }
+
+        ////////////
+        // Detect zoom and scale hint text
+        let lastWidth = window.innerWidth;
+
+        function updateHintScale() {
+            const currentWidth = window.innerWidth;
+            const zoomLevel = lastWidth / currentWidth;
+
+            const hint = document.querySelector('.start-hint');
+            if (hint && !hint.classList.contains('fade-out')) {
+                hint.style.transform = `scale(${zoomLevel})`;
             }
+        }
+
+        window.addEventListener('resize', updateHintScale);
+        window.visualViewport?.addEventListener('resize', updateHintScale);
 
 
-
-        (function(){
+        (function () {
             const WARP_MS = 2600; // animation length (ms)
             document.documentElement.style.setProperty('--warp-ms', WARP_MS + 'ms');
 
@@ -691,87 +755,43 @@
                 if (!a) return;
 
                 if (a.href && a.href.includes('discord.gg')) {
-                e.preventDefault();
+                    e.preventDefault();
 
-                // play quick radio/tune noise if available
-                if (typeof playStartNoise === 'function') {
-                    try { playWarpBoom({ duration: 2600, boomLevel: 3.95, distortion: 3.85, sweepEnd: 70000 }); } catch (err) {}
-                }
-
-                // optional: ramp ambient down slightly
-                try {
-                    if (typeof ambientGain !== 'undefined' && ambientGain) {
-                    ambientGain.gain.linearRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    // play quick radio/tune noise if available
+                    if (typeof playStartNoise === 'function') {
+                        try { playWarpBoom({ duration: 2600, boomLevel: 3.95, distortion: 3.85, sweepEnd: 70000 }); } catch (err) { }
                     }
-                } catch (err){}
 
-                // show warp overlay if present
-                const overlay = document.getElementById('warp-overlay');
-                if (overlay) {
-                    overlay.classList.add('active');
-                    // after warp, open link
-                    setTimeout(() => {
-                    window.open(a.href, '_blank');
-                    overlay.classList.remove('active');
-                    void overlay.offsetWidth;
-                    }, WARP_MS + 150);
-                } else {
-                    // fallback: open immediately if overlay not found
-                    window.open(a.href, '_blank');
-                }
-                }
-            }, {capture: true});
-            })();
+                    // optional: ramp ambient down slightly
+                    try {
+                        if (typeof ambientGain !== 'undefined' && ambientGain) {
+                            ambientGain.gain.linearRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        }
+                    } catch (err) { }
 
-    
+                    // show warp overlay if present
+                    const overlay = document.getElementById('warp-overlay');
+                    if (overlay) {
+                        overlay.classList.add('active');
+                        // after warp, open link
+                        setTimeout(() => {
+                            window.open(a.href, '_blank');
+                            overlay.classList.remove('active');
+                            void overlay.offsetWidth;
+                        }, WARP_MS + 150);
+                    } else {
+                        // fallback: open immediately if overlay not found
+                        window.open(a.href, '_blank');
+                    }
+                }
+            }, { capture: true });
+        })();
+
+
     </script>
 
-            
-            <!-- if (currentChar < line.length) {
-                // Type character
-                const char = line[currentChar];
 
-                // Remove cursor
-                const cursor = lineDiv.querySelector('.cursor');
-                if (cursor) cursor.remove();
 
-                // Add character
-                const textNode = document.createTextNode(char);
-                lineDiv.appendChild(textNode);
-                
-                // Add cursor back
-                const newCursor = document.createElement('span');
-                newCursor.className = 'cursor';
-                lineDiv.appendChild(newCursor);
-                
-                // Play sound for non-space characters
-                if (char !== ' ' && char !== '.') {
-                    playKeySound();
-                }
-
-                currentChar++;
-
-                // Slower, more dramatic speed (100-150ms per character)
-                const speed = line === '...' ? 800 : (100 + Math.random() * 50);
-                setTimeout(typeWriter, speed);
-            } else {
-                // Line finished
-                currentLine++;
-                currentChar = 0;
-                
-                // Longer pause between lines (2-3 seconds)
-                const pause = 2000 + Math.random() * 1000;
-                setTimeout(typeWriter, pause);
-            }
-        }
-        
-        // Start typing after 2 seconds
-        setTimeout(() => {
-            startAmbientSound();
-            setTimeout(typeWriter, 1000);
-        }, 2000);
-    </script>
-     -->
 </body>
 
 </html>
